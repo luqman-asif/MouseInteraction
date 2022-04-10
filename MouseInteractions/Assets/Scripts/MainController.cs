@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-
+using System;
 
 [System.Serializable]
 public class PlacementData
@@ -24,14 +24,14 @@ public class MainController : MonoBehaviour
     public Animator characterAnimator;
 
     [Header("UI")]
-    public GameObject speechBubble;
+    public GameObject speechBubble, maxAmountPanel;
     public Transform itemContainerTransform;
     public GameObject itemUIDisplayPRefab;
     public TMP_Text totalPriceText;
     public List<GameObject> UiItemStorage;
     public new AudioSource audio;
     public ParticleSystem spark;
-   
+
     public GameObject hoverPoint;
 
     //for private
@@ -115,6 +115,8 @@ public class MainController : MonoBehaviour
                             //for animation effect only
                             currentSelectedItem.transform.DOJump(availablePlace.position, 1f, 1, 0.5f, false).OnComplete(PlaySoundParticle);
                         }
+                        else
+                            StartCoroutine(ShowMaxAmount());
                     }
                 }
             }
@@ -127,7 +129,7 @@ public class MainController : MonoBehaviour
                 {
                     hoverPoint.SetActive(true);
                     hoverPoint.transform.position = hit.collider.gameObject.transform.position;
-                   
+
                 }
                 else
                 {
@@ -173,9 +175,17 @@ public class MainController : MonoBehaviour
         {
             if (arrayOfPlaces[i]._object == null)
                 return arrayOfPlaces[i]._placement;
+
         }
         //otherwise null - means no placement available
         return null;
+    }
+
+    IEnumerator ShowMaxAmount()
+    {
+        maxAmountPanel.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        maxAmountPanel.SetActive(false);
     }
 
     void FillAtAvailablePlaceAtCounter(GameObject item)
@@ -187,6 +197,7 @@ public class MainController : MonoBehaviour
                 arrayOfPlaces[i]._object = item;
                 break;
             }
+
         }
     }
 
